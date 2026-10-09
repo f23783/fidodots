@@ -1,0 +1,40 @@
+/* codexbar-quickshell — waybar segment styling.
+ * Pill look matches the other right-side modules in style.css
+ * (@surface / @overlay / 20px radius come from matugen's colors.css).
+ * State classes ok / warning / critical / stale are emitted by
+ * `qs ipc call codexbar status`.
+ */
+
+#custom-codexbar {
+    background: @surface;
+    color: @accent;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+    font-weight: bold;
+}
+
+#custom-codexbar:hover {
+    background: @overlay;
+}
+
+#custom-codexbar.warning {
+    color: #f5a623;
+    background: alpha(#f5a623, 0.18);
+}
+
+#custom-codexbar.critical {
+    color: #ff5470;
+    background: alpha(#ff5470, 0.22);
+    animation: codexbar-pulse 2s ease-in-out infinite alternate;
+}
+
+#custom-codexbar.stale {
+    /* Latest fetch failed or the value came from the cache. */
+    color: @text_muted;
+}
+
+@keyframes codexbar-pulse {
+    from { background: alpha(#ff5470, 0.22); }
+    to   { background: alpha(#ff5470, 0.40); }
+}

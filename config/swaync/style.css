@@ -1,0 +1,120 @@
+/* =============================================
+   SwayNC style.css — Matugen Dynamic
+   Colors.qml ile tam senkron
+   ============================================= */
+
+@define-color base #111318;
+@define-color surface #1e2025;
+@define-color overlay #282a2f;
+@define-color text #e2e2e9;
+@define-color textMuted #c4c6d0;
+@define-color textHint #8e9099;
+@define-color accent #abc7ff;
+@define-color red #ffb4ab;
+
+* {
+    font-family: "Inter", "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    border: none;
+    min-height: 0;
+    transition: 150ms ease;
+}
+
+/* ── Bildirim popup'ı ── */
+.notification-row {
+    outline: none;
+    margin: 6px 12px;
+}
+
+.notification {
+    background: alpha(@surface, 0.95);
+    border: 1px solid alpha(@text, 0.09);
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.notification:hover {
+    background: alpha(@overlay, 0.95);
+}
+
+.notification-summary {
+    color: @text;
+    font-weight: 500;
+}
+
+.notification-body {
+    color: @textMuted;
+}
+
+.notification-time {
+    color: @textHint;
+}
+
+/* Kapat butonu */
+.close-button {
+    background: alpha(@text, 0.06);
+    color: @textHint;
+}
+
+.close-button:hover {
+    background: alpha(@red, 0.20);
+    color: @red;
+}
+
+.critical {
+    border-color: alpha(@red, 0.40);
+}
+
+.critical .notification-summary {
+    color: @red;
+}
+
+/* ── Kontrol Merkezi ── */
+.control-center {
+    background: alpha(@base, 0.96);
+    border: 1px solid alpha(@text, 0.09);
+    border-radius: 16px;
+}
+
+.widget-title {
+    color: @text;
+}
+
+.widget-title > button {
+    background: alpha(@accent, 0.15);
+    border: 1px solid alpha(@accent, 0.40);
+    color: @accent;
+}
+
+.widget-dnd > switch {
+    background: alpha(@text, 0.07);
+    color: @textMuted;
+}
+
+.widget-dnd > switch:checked {
+    background: alpha(@accent, 0.20);
+    border-color: alpha(@accent, 0.50);
+    color: @accent;
+}
+
+.widget-mpris-player {
+    background: alpha(@overlay, 0.60);
+    border: 1px solid alpha(@text, 0.08);
+}
+
+.widget-mpris-title { color: @text; }
+.widget-mpris-subtitle { color: @textMuted; }
+
+.notification-action {
+    background: alpha(@text, 0.06);
+    color: @textMuted;
+}
+
+.notification-action:hover {
+    background: alpha(@accent, 0.20);
+    color: @accent;
+}
+
+scrollbar slider {
+    background: alpha(@text, 0.10);
+}

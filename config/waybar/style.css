@@ -1,0 +1,223 @@
+@import "colors.css";
+@import "user-style.css";
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: @text;
+}
+
+tooltip {
+    background: @base;
+    border: 1px solid @surface;
+    border-radius: 10px;
+    color: @text;
+}
+
+/* ── Sol: Search ── */
+#custom-search {
+    background: @surface;
+    color: @text;
+    border-radius: 20px;
+    padding: 0 14px;
+    font-size: 15px;
+    margin: 4px 2px;
+}
+
+#custom-search:hover {
+    background: @overlay;
+}
+
+/* ── Sol: Bildirim ── */
+#custom-notification {
+    background: @surface;
+    color: @text;
+    border-radius: 20px;
+    padding: 0 14px;
+    font-size: 15px;
+    margin: 4px 2px;
+}
+
+#custom-notification:hover {
+    background: @overlay;
+}
+
+/* ── Sol: Workspaceler ── */
+#workspaces {
+    background: @surface;
+    border-radius: 20px;
+    margin: 4px 2px;
+    padding: 0 4px;
+}
+
+#workspaces button {
+    color: @text_muted;
+    background: transparent;
+    border-radius: 16px;
+    padding: 0 9px;
+    transition: all 0.15s ease;
+}
+
+#workspaces button:hover {
+    background: @overlay;
+    color: @text;
+}
+
+#workspaces button.active {
+    background: @accent;
+    color: @base;
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: @base;
+}
+
+/* ── Orta: Saat ── */
+#clock {
+    background: @surface;
+    color: @text;
+    border-radius: 20px;
+    padding: 0 16px;
+    margin: 4px 2px;
+    font-weight: 500;
+}
+
+/* ── Orta: Hava durumu ── */
+#custom-weather {
+    background: @surface;
+    color: @text_muted;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+/* ── Sağ: Ağ ── */
+#network {
+    background: @surface;
+    color: @accent2;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+#network:hover {
+    background: @overlay;
+}
+
+#network.disconnected {
+    color: @red;
+}
+
+/* ── Sağ: Bluetooth ── */
+#bluetooth {
+    background: @surface;
+    color: @accent3;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+#bluetooth:hover {
+    background: @overlay;
+}
+
+#bluetooth.off,
+#bluetooth.disabled {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    background: transparent;
+    opacity: 0;
+}
+
+/* ── Sağ: Ses ── */
+#pulseaudio {
+    background: @surface;
+    color: @text;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+#pulseaudio:hover {
+    background: @overlay;
+}
+
+#pulseaudio.muted {
+    color: @text_muted;
+}
+
+/* ── Sağ: Kulaklık (G733) ── */
+#custom-headset {
+    background: @surface;
+    color: @accent2;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+#custom-headset:hover {
+    background: @overlay;
+}
+
+#custom-headset.warning {
+    color: @yellow;
+}
+
+#custom-headset.critical {
+    color: @red;
+    animation: blink 1s ease-in-out infinite;
+}
+
+/* Kulaklık bağlı değilken modül tamamen kaybolsun */
+#custom-headset.disconnected {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    background: transparent;
+    opacity: 0;
+}
+
+/* ── Sağ: Batarya ── */
+#battery {
+    background: @surface;
+    color: @green;
+    border-radius: 20px;
+    padding: 0 14px;
+    margin: 4px 2px;
+}
+
+#battery.charging {
+    color: @green;
+}
+
+#battery.warning {
+    color: @yellow;
+}
+
+#battery.critical {
+    color: @red;
+    animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* ── Sağ: Tray ── */
+#tray {
+    background: @surface;
+    border-radius: 20px;
+    padding: 0 10px;
+    margin: 4px 2px;
+}

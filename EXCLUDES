@@ -1,0 +1,9 @@
+# rsync exclude patterns, used by sync.sh.
+*.bak
+*.bak-*
+*.bac
+*~
+# waybar/scripts: legacy codexbar, replaced by the quickshell version.
+/scripts/
+# matugen/generated: rewritten on every wallpaper change.
+/generated/

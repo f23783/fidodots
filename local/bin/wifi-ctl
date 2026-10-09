@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""
+WiFi kontrol katmanı — nmcli'yi sarar, QML'in doğrudan okuyabileceği JSON üretir.
+
+Kullanım:
+  wifi-ctl status              → radyo durumu + aktif bağlantı
+  wifi-ctl list                → görünen ağlar (sinyal, güvenlik, kayıtlı mı)
+  wifi-ctl connect <SSID>      → şifre STDIN'den okunur (argv'ye yazılmaz)
+  wifi-ctl disconnect
+  wifi-ctl forget <SSID>
+  wifi-ctl radio <on|off>
+  wifi-ctl rescan
+
+Tüm çıktı tek satır JSON. Hata olursa {"ok": false, "error": "..."}.
+"""
+import json
+import os
+import subprocess
+import sys
+import tempfile
+
+TIMEOUT = 45
+
+
+def nmcli(args, stdin_data=None, timeout=TIMEOUT):
+    """nmcli çalıştır; stderr'deki sürüm uyarısını ayıkla."""
+    try:
+        p = subprocess.run(
+            ["nmcli"] + args,
+            input=stdin_data,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return 124, "", "islem zaman asimina ugradi"
+    err = "\n".join(
+        l for l in p.stderr.splitlines() if "versions don't match" not in l
+    ).strip()
+    return p.returncode, p.stdout, err
+
+
+def unescape(s):
+    """nmcli terse modda ':' ve '\\' karakterlerini kaçırır."""
+    out, i = [], 0
+    while i < len(s):
+        if s[i] == "\\" and i + 1 < len(s):
+            out.append(s[i + 1])
+            i += 2
+        else:
+            out.append(s[i])
+            i += 1
+    return "".join(out)
+
+
+def split_terse(line, count):
+    """Kaçırılmış ':' ayraçlarını dikkate alarak böl."""
+    fields, cur, i = [], [], 0
+    while i < len(line):
+        c = line[i]
+        if c == "\\" and i + 1 < len(line):
+            cur.append(line[i + 1])
+            i += 2
+        elif c == ":" and len(fields) < count - 1:
+            fields.append("".join(cur))
+            cur = []
+            i += 1
+        else:
+            cur.append(c)
+            i += 1
+    fields.append("".join(cur))
+    while len(fields) < count:
+        fields.append("")
+    return fields
+
+
+def wifi_device():
+    rc, out, _ = nmcli(["-t", "-f", "DEVICE,TYPE,STATE", "device", "status"])
+    for line in out.splitlines():
+        dev, typ, state = split_terse(line, 3)
+        if typ == "wifi":
+            return dev, state
+    return None, None
+
+
+def saved_ssids():
+    rc, out, _ = nmcli(["-t", "-f", "NAME,TYPE", "connection", "show"])
+    names = set()
+    for line in out.splitlines():
+        name, typ = split_terse(line, 2)
+        if typ == "802-11-wireless":
+            names.add(name)
+    return names
+
+
+def cmd_status():
+    dev, state = wifi_device()
+    rc, out, _ = nmcli(["radio", "wifi"])
+    radio = out.strip() == "enabled"
+
+    active = None
+    if dev:
+        rc, out, _ = nmcli(
+            ["-t", "-f", "NAME,DEVICE,TYPE", "connection", "show", "--active"]
+        )
+        for line in out.splitlines():
+            name, d, typ = split_terse(line, 3)
+            if d == dev and typ == "802-11-wireless":
+                active = {"ssid": name}
+                break
+
+    if active:
+        rc, out, _ = nmcli(
+            ["-t", "-f", "IN-USE,SIGNAL", "device", "wifi", "list", "--rescan", "no"]
+        )
+        for line in out.splitlines():
+            inuse, sig = split_terse(line, 2)
+            if inuse.strip() == "*":
+                active["signal"] = int(sig or 0)
+                break
+        rc, out, _ = nmcli(["-t", "-f", "IP4.ADDRESS", "device", "show", dev])
+        for line in out.splitlines():
+            if ":" in line:
+                active["ip"] = line.split(":", 1)[1].strip()
+                break
+
+    return {"ok": True, "radio": radio, "device": dev, "state": state, "active": active}
+
+
+def cmd_list():
+    dev, _ = wifi_device()
+    if not dev:
+        return {"ok": False, "error": "wifi arayuzu bulunamadi", "networks": []}
+
+    rc, out, err = nmcli(
+        ["-t", "-f", "IN-USE,SIGNAL,SECURITY,FREQ,SSID",
+         "device", "wifi", "list", "--rescan", "no"]
+    )
+    if rc != 0:
+        return {"ok": False, "error": err or "liste alinamadi", "networks": []}
+
+    saved = saved_ssids()
+    best = {}
+    for line in out.splitlines():
+        inuse, sig, sec, freq, ssid = split_terse(line, 5)
+        ssid = ssid.strip()
+        if not ssid:
+            continue                      # gizli aglari atla
+        try:
+            signal = int(sig)
+        except ValueError:
+            signal = 0
+        try:
+            band = "5 GHz" if int(freq.split()[0]) > 4000 else "2.4 GHz"
+        except (ValueError, IndexError):
+            band = ""
+        sec = sec.strip()
+        entry = {
+            "ssid": ssid,
+            "signal": signal,
+            "security": sec,
+            "open": sec == "" or sec == "--",
+            "band": band,
+            "inuse": inuse.strip() == "*",
+            "saved": ssid in saved,
+        }
+        # Aynı SSID birden çok AP'de görünebilir; en güçlüsünü tut.
+        if ssid not in best or signal > best[ssid]["signal"]:
+            best[ssid] = entry
+
+    nets = sorted(best.values(), key=lambda n: (-n["inuse"], -n["signal"]))
+    return {"ok": True, "networks": nets}
+
+
+def diag(msg):
+    """Teshis kaydi — sifrenin KENDISI asla yazilmaz, sadece uzunlugu."""
+    try:
+        import time
+        with open("/run/user/%d/wifi-ctl.log" % os.getuid(), "a") as f:
+            f.write("%s %s\n" % (time.strftime("%H:%M:%S"), msg))
+    except Exception:
+        pass
+
+
+def cmd_connect(ssid):
+    password = ""
+    if not sys.stdin.isatty():
+        try:
+            password = sys.stdin.read().strip()
+        except Exception:
+            password = ""
+    diag("connect ssid=%r sifre_uzunlugu=%d" % (ssid, len(password)))
+
+    # Sifresiz cagri + kayitli ag → mevcut profili kaldir.
+    if not password:
+        if ssid in saved_ssids():
+            rc, out, err = nmcli(["connection", "up", "id", ssid])
+            diag("kayitli profil rc=%d err=%r" % (rc, err[:120]))
+            if rc == 0:
+                return {"ok": True, "ssid": ssid}
+            return {"ok": False, "error": err or "baglanti kurulamadi"}
+        rc, out, err = nmcli(["device", "wifi", "connect", ssid])
+        diag("acik ag rc=%d err=%r" % (rc, err[:120]))
+        if rc == 0:
+            return {"ok": True, "ssid": ssid}
+        return {"ok": False, "error": err or "baglanti kurulamadi"}
+
+    # Sifre verildi: eski profili sil, icindeki yanlis psk yeniden kullanilmasin.
+    if ssid in saved_ssids():
+        rc, _, _ = nmcli(["connection", "delete", "id", ssid])
+        diag("eski profil silindi rc=%d" % rc)
+
+    # nmcli'nin passwd-file mekanizmasi: sifre argv'de DEGIL, 0600 izinli
+    # gecici dosyada. Dosya tmpfs'te durur ve hemen silinir.
+    rundir = "/run/user/%d" % os.getuid()
+    fd, path = tempfile.mkstemp(prefix="wifi-psk-", dir=rundir)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w") as f:
+            f.write("802-11-wireless-security.psk:%s\n" % password)
+
+        # 1) Profili SIFRESIZ olustur — psk argv'ye girmez.
+        dev, _ = wifi_device()
+        add_args = [
+            "connection", "add", "type", "wifi",
+            "con-name", ssid, "ssid", ssid,
+            "wifi-sec.key-mgmt", "wpa-psk",
+        ]
+        if dev:
+            add_args += ["ifname", dev]
+        rc, out, err = nmcli(add_args, timeout=20)
+        diag("profil olusturuldu rc=%d err=%r" % (rc, err[:160]))
+        if rc != 0:
+            return {"ok": False, "error": err or "profil olusturulamadi"}
+
+        # 2) Sifreyi passwd-file ile vererek baglan.
+        rc, out, err = nmcli(
+            ["--wait", "25", "connection", "up", "id", ssid, "passwd-file", path],
+            timeout=40,
+        )
+        diag("connection up rc=%d err=%r" % (rc, err[:160]))
+        if rc != 0:
+            # Basarisiz profil diskte kalmasin.
+            nmcli(["connection", "delete", "id", ssid])
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+    if rc == 0:
+        return {"ok": True, "ssid": ssid}
+
+    msg = err or "baglanti kurulamadi"
+    low = msg.lower()
+    if ("secrets" in low or "mismatch" in low or "no-secrets" in low
+            or "zaman asimina" in low or "timeout" in low):
+        msg = "Sifre kabul edilmedi"
+    elif "not authorized" in low or "permission" in low:
+        msg = "Yetki reddedildi"
+    return {"ok": False, "error": msg}
+
+
+def cmd_disconnect():
+    dev, _ = wifi_device()
+    if not dev:
+        return {"ok": False, "error": "wifi arayuzu yok"}
+    rc, out, err = nmcli(["device", "disconnect", dev])
+    return {"ok": rc == 0, "error": err} if rc != 0 else {"ok": True}
+
+
+def cmd_forget(ssid):
+    rc, out, err = nmcli(["connection", "delete", "id", ssid])
+    return {"ok": rc == 0, "error": err} if rc != 0 else {"ok": True}
+
+
+def cmd_radio(state):
+    rc, out, err = nmcli(["radio", "wifi", state])
+    return {"ok": rc == 0, "error": err} if rc != 0 else {"ok": True}
+
+
+def cmd_rescan():
+    rc, out, err = nmcli(["device", "wifi", "rescan"], timeout=20)
+    # "Scanning not allowed immediately following previous scan" hata degil
+    if rc != 0 and "immediately following" not in err:
+        return {"ok": False, "error": err}
+    return {"ok": True}
+
+
+def main():
+    if len(sys.argv) < 2:
+        print(json.dumps({"ok": False, "error": "komut verilmedi"}))
+        return 1
+    cmd = sys.argv[1]
+    arg = sys.argv[2] if len(sys.argv) > 2 else ""
+
+    table = {
+        "status": lambda: cmd_status(),
+        "list": lambda: cmd_list(),
+        "connect": lambda: cmd_connect(arg),
+        "disconnect": lambda: cmd_disconnect(),
+        "forget": lambda: cmd_forget(arg),
+        "radio": lambda: cmd_radio(arg),
+        "rescan": lambda: cmd_rescan(),
+    }
+    if cmd not in table:
+        print(json.dumps({"ok": False, "error": "bilinmeyen komut: " + cmd}))
+        return 1
+    try:
+        print(json.dumps(table[cmd](), ensure_ascii=False))
+    except Exception as e:
+        print(json.dumps({"ok": False, "error": str(e)}, ensure_ascii=False))
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

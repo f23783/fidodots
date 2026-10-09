@@ -1,0 +1,9 @@
+Panel 1.0 Panel.qml
+QuickSettings 1.0 QuickSettings.qml
+CalendarWidget 1.0 CalendarWidget.qml
+SystemInfo 1.0 SystemInfo.qml
+MusicControl 1.0 MusicControl.qml
+TogglePill 1.0 TogglePill.qml
+SliderRow 1.0 SliderRow.qml
+StatBar 1.0 StatBar.qml
+MusicButton 1.0 MusicButton.qml

@@ -1,0 +1,14 @@
+/* Bu dosya matugen tarafından otomatik üretilir, elle düzenleme */
+/* Waybar style.css bu dosyayı @import ile çekiyor              */
+
+@define-color base        #abc7ff;
+@define-color surface     #284777;
+@define-color overlay     #3e4759;
+@define-color text        #e2e2e9;
+@define-color text_muted  #8e9099;
+@define-color accent      #abc7ff;
+@define-color accent2     #bec6dc;
+@define-color accent3     #ddbce0;
+@define-color red         #ffb4ab;
+@define-color green       #ddbce0;
+@define-color yellow      #bec6dc;

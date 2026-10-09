@@ -1,0 +1,6 @@
+singleton UsageService 1.0 UsageService.qml
+singleton Severity 1.0 Severity.qml
+CodexPopup 1.0 CodexPopup.qml
+ProviderTab 1.0 ProviderTab.qml
+UsageSection 1.0 UsageSection.qml
+SettingsView 1.0 SettingsView.qml

@@ -1,0 +1,7 @@
+*.bak
+*.bak-*
+*.bac
+.env
+*.so
+__pycache__/
+wallpaper/

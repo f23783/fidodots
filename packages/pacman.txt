@@ -1,0 +1,56 @@
+# Official repos (core/extra). One package per line, comments allowed.
+
+# Compositor and lock
+hyprland
+hyprlock
+xdg-desktop-portal-hyprland
+
+# Bar, widgets, notifications, OSD
+waybar
+swaync
+swayosd
+
+# Theming: wallpaper -> palette -> every app
+matugen
+awww
+ffmpeg
+
+# Apps
+kitty
+rofi
+yazi
+neovim
+btop
+
+# Clipboard and screenshots
+cliphist
+wl-clipboard
+grim
+slurp
+
+# Audio, network, bluetooth, hardware
+pipewire
+pipewire-pulse
+wireplumber
+pavucontrol
+playerctl
+brightnessctl
+networkmanager
+bluez
+bluez-utils
+headsetcontrol
+
+# Speech (say.sh falls back to espeak-ng when piper is absent)
+espeak-ng
+
+# Script helpers
+jq
+python
+libnotify
+rsync
+
+# Fonts
+ttf-jetbrains-mono-nerd
+ttf-nerd-fonts-symbols
+noto-fonts-emoji
+inter-font

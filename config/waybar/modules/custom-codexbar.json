@@ -1,0 +1,15 @@
+// Waybar custom-module definition for codexbar-quickshell.
+//
+// The segment is fed from Quickshell's memory over IPC — no CLI call, no
+// jq, instant. Clicking toggles the Quickshell popup.
+{
+    "custom/codexbar": {
+        "exec": "qs ipc call codexbar status",
+        "return-type": "json",
+        "format": "{}",
+        "interval": 30,
+        "on-click": "qs ipc call codexbar toggle",
+        "tooltip": true,
+        "max-length": 24
+    }
+}

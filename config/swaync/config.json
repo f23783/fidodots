@@ -1,0 +1,50 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "left",
+  "positionY": "top",
+  "control-center-margin-top": 56,
+  "control-center-margin-bottom": 8,
+  "control-center-margin-right": 0,
+  "control-center-margin-left": 16,
+  "notification-icon-size": 48,
+  "notification-close-button-size": 24,
+  "show-notifications-in-control-center": true,
+  "notification-2fa-action": true,
+  "notification-inline-replies": false,
+  "notification-window-width": 360,
+  "control-center-width": 360,
+  "control-center-height": 600,
+  "fit-to-screen": false,
+  "relative-timestamps": true,
+  "layer": "overlay",
+  "control-center-layer": "overlay",
+  "hide-on-clear": false,
+  "hide-on-action": true,
+  "script-fail-notify": true,
+  "timeout": 5,
+  "timeout-low": 3,
+  "timeout-critical": 0,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when-available",
+  "transition-time": 200,
+  "widgets": [
+    "mpris",
+    "title",
+    "dnd",
+    "notifications"
+  ],
+  "widget-config": {
+    "title": {
+      "text": "Notifications",
+      "clear-all-button": true,
+      "button-text": "Clear"
+    },
+    "dnd": {
+      "text": "Slient"
+    },
+    "mpris": {
+      "image-size": 56,
+      "image-radius": 8
+    }
+  }
+}

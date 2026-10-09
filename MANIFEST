@@ -1,0 +1,23 @@
+# repo path                          target (relative to $HOME)
+config/hypr                          .config/hypr
+config/waybar                        .config/waybar
+config/quickshell                    .config/quickshell
+config/matugen                       .config/matugen
+config/kitty                         .config/kitty
+config/rofi                          .config/rofi
+config/swaync                        .config/swaync
+config/swayosd                       .config/swayosd
+config/yazi                          .config/yazi
+config/nvim                          .config/nvim
+config/btop                          .config/btop
+config/cliphist                      .config/cliphist
+local/bin/clipboard-menu.sh          .local/bin/clipboard-menu.sh
+local/bin/cliphist-store.sh          .local/bin/cliphist-store.sh
+local/bin/headset-battery.sh         .local/bin/headset-battery.sh
+local/bin/headset-battery-watch.sh   .local/bin/headset-battery-watch.sh
+local/bin/say.sh                     .local/bin/say.sh
+local/bin/say-prewarm.sh             .local/bin/say-prewarm.sh
+local/bin/wallpaper-autopause.py     .local/bin/wallpaper-autopause.py
+local/bin/wallpaper-picker.sh        .local/bin/wallpaper-picker.sh
+local/bin/wifi-ctl                   .local/bin/wifi-ctl
+home/wallpaper.sh                    wallpaper.sh

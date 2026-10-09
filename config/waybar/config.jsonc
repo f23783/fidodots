@@ -1,0 +1,134 @@
+{
+
+    "layer": "top",
+    "position": "top",
+    "height": 44,
+    "spacing": 6,
+    "margin-top": 8,
+    "margin-left": 16,
+    "margin-right": 16,
+
+    "modules-left": [
+        "custom/search",
+        "custom/notification",
+        "hyprland/workspaces"
+    ],
+
+    "modules-center": [
+        "clock",
+        "custom/weather"
+    ],
+
+    "include": ["~/.config/waybar/modules/custom-codexbar.json"],
+
+    "modules-right": [
+        "network",
+        "custom/codexbar",
+        "bluetooth",
+        "pulseaudio",
+        "custom/headset",
+        "battery",
+        "tray"
+    ],
+
+    "custom/search": {
+        "format": "\uea6d",
+        "tooltip": false,
+        "on-click": "rofi -show drun"
+    },
+
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "\uf0f3",
+            "none": "\uf0a2",
+            "dnd-notification": "\uf1f6",
+            "dnd-none": "\uf1f6"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "sort-by-number": true,
+        "active-only": false,
+        "persistent-workspaces": {
+            "*": [1, 2, 3, 4, 5, 6, 7, 8]
+        }
+    },
+
+    "clock": {
+        "format": "{:%I:%M:%S|%A, %B %d}",
+        "interval": 1,
+        "tooltip": false,
+	"on-click": "quickshell ipc call panel toggle"
+    },
+
+    "custom/weather": {
+        "exec": "~/.config/waybar/scripts/weather.sh",
+        "interval": 1800,
+        "format": "{}",
+        "tooltip": false
+    },
+
+    "network": {
+        "format-wifi": " {essid}",
+        "format-ethernet": "\udb81\udef3 |{ifname}",
+        "format-disconnected": "\udb83\udc9b",
+        "tooltip-format-wifi": "{essid} {signalStrength}%",
+	"tooltip-format-ethernet": "{ipaddr}/{cidr}",
+        "max-length": 14,
+        "on-click": "qs ipc call wifi toggle"
+    },
+
+    "bluetooth": {
+        "format": "\uf294",
+        "format-disabled": "\udb80\udcb2",
+        "format-connected": " {device_alias}",
+        "tooltip-format": "{controller_alias}\n{num_connections} bağlı",
+        "max-length": 14,
+        "on-click": "qs ipc call bluetooth toggle"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "\udb81\udf5f",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+	"on-click-middle": "pavucontrol", 
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +2%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -2%",
+        "tooltip": false,
+	"format-icons": ["\udb81\udd7f", "\udb81\udd80", "\udb81\udd7e"]
+    },
+
+    "custom/headset": {
+        "exec": "~/.local/bin/headset-battery.sh --waybar",
+        "return-type": "json",
+        "format": "{}",
+        "interval": 60,
+        "on-click": "~/.local/bin/headset-battery.sh --speak",
+        "on-click-right": "~/.local/bin/headset-battery.sh --notify",
+        "tooltip": true
+    },
+
+    "battery": {
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
+        "tooltip": false,
+	"on-click": "quickshell ipc call powermenu toggle"
+    },
+
+    "tray": {
+        "spacing": 8,
+        "icon-size": 16
+    }
+}

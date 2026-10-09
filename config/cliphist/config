@@ -1,0 +1,4 @@
+db-path /run/user/1000/cliphist/db
+max-items 300
+min-store-length 2
+preview-width 120

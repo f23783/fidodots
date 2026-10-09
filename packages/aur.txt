@@ -1,0 +1,6 @@
+# AUR packages, installed with yay (bootstrapped if missing).
+
+# The QML uses APIs newer than the extra/quickshell release.
+quickshell-git
+# Video wallpapers
+mpvpaper

@@ -1,0 +1,14 @@
+/* Bu dosya matugen tarafından otomatik üretilir, elle düzenleme */
+/* Waybar style.css bu dosyayı @import ile çekiyor              */
+
+@define-color base        {{colors.primary.default.hex}};
+@define-color surface     {{colors.primary_container.default.hex}};
+@define-color overlay     {{colors.secondary_container.default.hex}};
+@define-color text        {{colors.on_background.default.hex}};
+@define-color text_muted  {{colors.outline.default.hex}};
+@define-color accent      {{colors.primary.default.hex}};
+@define-color accent2     {{colors.secondary.default.hex}};
+@define-color accent3     {{colors.tertiary.default.hex}};
+@define-color red         {{colors.error.default.hex}};
+@define-color green       {{colors.tertiary.default.hex}};
+@define-color yellow      {{colors.secondary.default.hex}};

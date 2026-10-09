@@ -1,0 +1,92 @@
+# ─────────────────────────────────────────────
+# Yazi File Manager Configuration
+# ─────────────────────────────────────────────
+
+[manager]
+ratio = [1, 3, 4]          # Left:Middle:Right panel ratio
+sort_by = "natural"
+sort_sensitive = false
+sort_reverse = false
+sort_dir_first = true
+linemode = "size"           # Show file sizes
+show_hidden = true          # Show dotfiles (toggle with '.')
+show_symlink = true
+
+[preview]
+max_width = 1000
+max_height = 1000
+image_filter = "triangle"
+image_quality = 75
+# Kitty image protocol for inline image previews
+sixel_fraction = 15
+ueberzug_scale = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[mgr]
+ratio = [1, 3, 4]
+sort_by = "natural"
+sort_dir_first = true
+linemode = "size"
+show_hidden = true
+show_symlink = true
+ 
+[opener]
+edit = [
+    { run = 'nvim "$@"', block = true, desc = "Neovim", for = "unix" },
+]
+open = [
+    { run = 'xdg-open "$@"', desc = "Open", for = "unix" },
+]
+reveal = [
+    { run = 'dolphin --select "$@"', desc = "Reveal in Dolphin", for = "unix" },
+]
+
+[open]
+rules = [
+    { url = "*/", use = ["edit", "open", "reveal"] },
+
+    { mime = "text/*", use = ["edit", "reveal"] },
+    { mime = "image/*", use = ["open", "reveal"] },
+    { mime = "video/*", use = ["open", "reveal"] },
+    { mime = "audio/*", use = ["open", "reveal"] },
+    { mime = "inode/x-empty", use = ["edit", "reveal"] },
+
+    { mime = "application/json", use = ["edit", "reveal"] },
+    { mime = "*/javascript", use = ["edit", "reveal"] },
+    { mime = "*/xml", use = ["edit", "reveal"] },
+
+    { mime = "*", use = ["open", "reveal"] },
+]
+
+[tasks]
+micro_workers = 10
+macro_workers = 25
+bizarre_retry = 5
+
+[plugin]
+preloaders = [
+    { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
+    { mime = "image/*", run = "image" },
+    { mime = "video/*", run = "video" },
+    { mime = "application/pdf", run = "pdf" },
+]
+previewers = [
+    { url = "*/", run = "folder", sync = true },
+    { mime = "text/*", run = "code" },
+    { mime = "*/xml", run = "code" },
+    { mime = "*/javascript", run = "code" },
+    { mime = "*/x-wine-extension-ini", run = "code" },
+    { mime = "application/json", run = "json" },
+    { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
+    { mime = "image/*", run = "image" },
+    { mime = "video/*", run = "video" },
+    { mime = "application/pdf", run = "pdf" },
+    { mime = "application/zip", run = "archive" },
+    { mime = "application/gzip", run = "archive" },
+    { mime = "application/x-tar", run = "archive" },
+    { mime = "application/x-bzip2", run = "archive" },
+    { mime = "application/x-xz", run = "archive" },
+    { mime = "application/x-7z-compressed", run = "archive" },
+    { mime = "application/x-rar", run = "archive" },
+    { url = "*.md", run = "code" },
+]

@@ -1,0 +1,17 @@
+/* ─────────────────────────────────────────────
+ * Rofi Configuration
+ * ~/.config/rofi/config.rasi
+ * ───────────────────────────────────────────── */
+
+configuration {
+    modi:                "drun,run,window";
+    show-icons:          true;
+    icon-theme:          "Papirus-Dark";
+    display-drun:        "";
+    display-run:         "";
+    display-window:      "";
+    drun-display-format: "{name}";
+    terminal:            "kitty";
+}
+
+@theme "matugen-colors"

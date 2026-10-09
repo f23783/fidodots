@@ -1,0 +1,42 @@
+[config]
+ 
+[templates.waybar-colors]
+input_path  = "~/.config/matugen/templates/waybar-colors.css"
+output_path = "~/.config/waybar/colors.css"
+
+[templates.quickshell]
+input_path = "~/.config/matugen/templates/qs-colors.qml"
+output_path = "~/.config/quickshell/Colors.qml"
+
+[templates.swaync]
+input_path = "~/.config/matugen/templates/swaync.css"
+output_path = "~/.config/swaync/style.css"
+
+[templates.kitty]
+input_path = "~/.config/matugen/templates/kitty-colors.toml"
+output_path = "~/.config/kitty/matugen-colors.conf"
+
+[templates.yazi]
+input_path = "~/.config/matugen/templates/yazi-theme.toml"
+output_path = "~/.config/yazi/theme.toml"
+
+[templates.hyprland]
+input_path = "~/.config/matugen/templates/hyprland-colors.toml"
+output_path = "~/.config/hypr/colors.conf"
+
+[templates.neovim]
+input_path = "~/.config/matugen/templates/nvim-colors.lua"
+output_path = "~/.config/nvim/matugen-colors.lua"
+post_hook = "pkill -SIGUSR1 nvim"
+
+[templates.zen]
+input_path = "~/.config/matugen/templates/zen-colors.css"
+output_path = "~/.config/matugen/generated/zen-userChrome.css"
+
+[templates.rofi]
+input_path = "~/.config/matugen/templates/rofi-colors.rasi"
+output_path = "~/.config/rofi/matugen-colors.rasi"
+
+[templates.atlas-live]
+input_path  = "~/.config/matugen/templates/atlas-live.css"
+output_path = "~/.config/matugen/generated/atlas-live.css"
