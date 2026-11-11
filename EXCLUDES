@@ -2,6 +2,7 @@
 *.bak
 *.bak-*
 *.bac
+*-bak
 *~
 # waybar/scripts: legacy codexbar, replaced by the quickshell version.
 /scripts/

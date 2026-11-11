@@ -40,3 +40,8 @@ output_path = "~/.config/rofi/matugen-colors.rasi"
 [templates.atlas-live]
 input_path  = "~/.config/matugen/templates/atlas-live.css"
 output_path = "~/.config/matugen/generated/atlas-live.css"
+
+# Hyprland 0.57+ Lua config — colors.conf hyprlock için kalıyor
+[templates.hyprland-lua]
+input_path = "~/.config/matugen/templates/hyprland-colors.lua"
+output_path = "~/.config/hypr/colors.lua"
